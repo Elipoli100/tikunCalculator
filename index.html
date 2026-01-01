@@ -7,20 +7,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root { --gold: #c5a059; --dark: #020617; }
-        body { font-family: 'Assistant', sans-serif; background-color: var(--dark); color: #f1f5f9; margin: 0; padding: 10px; overflow-x: hidden; }
+        :root { --gold: #c5a059; --dark-bg: #020617; --danger-red: #ef4444; }
+        
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f1f5f9; 
+            margin: 0; padding: 10px; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* אפקט הלהבות - "להבות הכרת" */
+        /* להבות הגיהנום - מאחורי התוכן */
         #hell-overlay {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 0%;
             background: linear-gradient(to top, #450a0a, #991b1b, #f97316, transparent);
-            box-shadow: 0 0 100px rgba(127, 29, 29, 0.9);
-            opacity: 0.8; pointer-events: none; z-index: 5; transition: height 1s ease;
+            box-shadow: 0 0 100px rgba(127, 29, 29, 0.8);
+            opacity: 0.9; pointer-events: none; z-index: 5; transition: height 1s ease;
         }
 
         .container { 
             position: relative; z-index: 100; max-width: 650px; margin: 10px auto;
-            background: rgba(15, 23, 42, 0.97); padding: 25px; border-radius: 15px;
+            background: rgba(15, 23, 42, 0.97); padding: 20px; border-radius: 15px;
             border: 2px solid #1e293b; box-shadow: 0 0 30px rgba(0,0,0,1);
         }
 
@@ -33,10 +41,19 @@
         h1 { font-family: 'Frank Ruhl Libre', serif; text-align: center; color: var(--gold); font-size: 38px; margin: 0; }
         #soul-status { text-align: center; font-weight: bold; margin: 15px 0; font-size: 20px; transition: 0.3s; }
 
-        .category-title { color: var(--gold); border-bottom: 2px solid var(--gold); margin: 30px 0 15px; padding-bottom: 5px; font-size: 22px; font-family: 'Frank Ruhl Libre', serif; background: rgba(197, 160, 89, 0.1); padding: 5px 10px; }
+        .category-title { 
+            color: var(--gold); border-bottom: 2px solid var(--gold); 
+            margin: 30px 0 15px; padding-bottom: 5px; font-size: 22px; 
+            font-family: 'Frank Ruhl Libre', serif; background: rgba(197, 160, 89, 0.1); padding: 5px 10px; 
+        }
+
         .item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1e293b; }
         
-        .info-btn { background: var(--gold); border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 16px; color: black; transition: 0.2s; }
+        .info-btn { 
+            background: var(--gold); border: none; border-radius: 50%; width: 28px; height: 28px; 
+            cursor: pointer; font-weight: bold; font-size: 16px; color: black; display: flex; align-items: center; justify-content: center;
+        }
+
         .qty-controls { display: flex; align-items: center; gap: 15px; }
         .btn-qty { background: transparent; border: 1px solid var(--gold); color: var(--gold); width: 35px; height: 35px; cursor: pointer; font-size: 22px; }
 
@@ -46,22 +63,22 @@
             display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 500;
         }
 
-        /* אימוג'י נופל */
-        .falling-emoji {
+        .falling-sin {
             position: fixed; top: -50px; font-size: 35px; z-index: 1000;
             pointer-events: none; animation: fall linear forwards;
+            transform: translateZ(0);
         }
-        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg) translateZ(0); } }
 
         #info-modal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #1e293b; padding: 30px; border-radius: 15px; border: 3px solid var(--gold);
-            z-index: 2000; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 0 100px black;
+            background: #1e293b; padding: 25px; border-radius: 15px; border: 3px solid var(--gold);
+            z-index: 2000; width: 85%; text-align: center; box-shadow: 0 0 100px black;
         }
 
         #fireworks-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10; }
         
-        /* קלף לייצוא תמונה */
+        /* קלף לייצוא */
         #export-source { position: absolute; left: -9999px; width: 500px; padding: 50px; background: #fdf6e3; color: #4a3728; font-family: 'Frank Ruhl Libre', serif; border: 20px solid #4a3728; text-align: center; }
     </style>
 </head>
@@ -69,22 +86,23 @@
 
 <div id="hell-overlay"></div>
 <canvas id="fireworks-canvas"></canvas>
+
 <audio id="fire-sound" loop><source src="https://www.soundjay.com/nature/sounds/fire-1.mp3" type="audio/mpeg"></audio>
 
 <div class="container">
-    <div class="promo-banner">✨ קוד קופון לשנה החדשה: <span style="text-decoration: underline;">HOLY2026</span> (20% הנחה) ✨</div>
+    <div class="promo-banner">✨ קופון לשנה החדשה: <span style="text-decoration: underline;">HOLY2026</span> (20% הנחה) ✨</div>
     
     <h1>מאזני הדין</h1>
     <div id="soul-status" style="color: #10b981;">✨ נשמה טהורה</div>
     <p style="text-align:center; font-size: 14px; opacity: 0.8;">פדיון יום תענית: 3 ש"ח</p>
 
-    <input type="text" id="user-name" placeholder="שם המבקש לתפילה (למשל: יצחק בן שרה)" style="width:100%; padding:14px; background:#0f172a; border:1px solid #334155; color:white; border-radius:8px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px;">
+    <input type="text" id="user-name" placeholder="שם המבקש לתפילה..." style="width:100%; padding:14px; background:#0f172a; border:1px solid #334155; color:white; border-radius:8px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px;">
 
     <div id="sin-list"></div>
 
     <div class="footer-sticky">
         <div style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-            <input type="text" id="coupon-input" placeholder="קוד קופון" oninput="calc()" style="width:40%; padding:10px; background:#1e293b; border:1px solid var(--gold); color:white; border-radius:5px;">
+            <input type="text" id="coupon-field" placeholder="קוד קופון" oninput="calc()" style="width:40%; padding:10px; background:#1e293b; border:1px solid var(--gold); color:white; border-radius:5px;">
             <div style="text-align: left;">
                 <span style="font-size:12px; opacity: 0.7;">סך הפדיון:</span><br>
                 <span style="font-size:26px; font-weight:bold; color:var(--gold);">₪<span id="price-val">0</span></span>
@@ -104,7 +122,7 @@
 <div id="export-source">
     <h1 style="color:#4a3728; border-bottom: 3px solid #4a3728; padding-bottom: 10px;">סדר פדיון תעניות</h1>
     <p style="font-size:24px;"><strong>לזכות המבקש:</strong> <span id="exp-name"></span></p>
-    <div id="exp-list" style="text-align:right; margin:25px 0; font-size:18px;"></div>
+    <div id="exp-list" style="text-align:right; margin:20px 0; font-size:18px;"></div>
     <div style="background: #efe4c9; padding: 25px; border-radius: 12px; border: 2px solid #4a3728;">
         <h2 style="margin:0; color:#5d4037;">סך הכל לפדיון נפש: ₪<span id="exp-price">0</span></h2>
     </div>
@@ -112,16 +130,14 @@
 </div>
 
 <script>
-    // --- הגדרות אלי (עדכן כאן!) ---
     const config = { 
-        paymentUrl: "https://your-payment-link.com", // החלף בקישור שלך
+        paymentUrl: "https://your-payment-link.com", // הכנס את הקישור שלך כאן
         couponCode: "HOLY2026", 
-        discount: 0.20,
-        pricePerDay: 3 
+        discount: 0.20 
     };
 
     const categories = [
-        { cat: "עוונות שבין אדם למקום", items: [
+        { cat: "עוונות שבין אדם למקום (האר\"י)", items: [
             { n: "א. ביטול מצוות עשה", f: 61, d: "ביטול קריאת שמע, תפילין, ציצית או סוכה המגנים על האדם." },
             { n: "ב. חטא במחשבה", f: 87, d: "הרהורי עבירה, כפירה או שנאת חינם הפוגמים בנשמה." },
             { n: "ג. יין נסך", f: 73, d: "שתיית יין מגע נכרי המטמטם את הלב." },
@@ -145,7 +161,7 @@
             { n: "יט. הבא על אשת איש", f: 325, d: "חטא חמור בקדושת הבית." },
             { n: "כ. הכותב קמיעות", f: 45, d: "שימוש בשמות הקודש שלא כדין." }
         ]},
-        { cat: "בין אדם לחברו", items: [
+        { cat: "תיקוני הרוקח", items: [
             { n: "כא. המלבין פני חברו", f: 40, d: "ביוש אדם ברבים נחשב כשפיכות דמים." },
             { n: "כב. חיבוק ונישוק נידה", f: 40, d: "קרבה גופנית אסורה מן הדין." },
             { n: "כג. גניבה או ריבית", f: 40, d: "גזל ממון או הלוואה אסורה." },
@@ -173,18 +189,21 @@
         startFW();
     }
 
-    function emojiRain() {
+    function triggerEffects() {
         const ems = ['🔥', '😈', 'חטא', '🔥'];
-        const e = document.createElement('div'); e.className = 'falling-emoji';
+        const e = document.createElement('div'); e.className = 'falling-sin';
         e.innerText = ems[Math.floor(Math.random() * ems.length)];
         e.style.left = Math.random() * 100 + "vw";
         e.style.animationDuration = (Math.random() * 2 + 2) + "s";
         document.body.appendChild(e);
         setTimeout(() => e.remove(), 4000);
+        
+        const snd = document.getElementById('fire-sound');
+        snd.play().catch(() => {});
     }
 
     function upd(n, d) {
-        if (d > 0) emojiRain();
+        if (d > 0) triggerEffects();
         counts[n] = Math.max(0, counts[n] + d);
         document.getElementById(`q-${n}`).innerText = counts[n];
         calc();
@@ -193,9 +212,9 @@
     function calc() {
         let totalF = 0;
         categories.forEach(c => c.items.forEach(i => totalF += counts[i.n] * i.f));
-        let price = totalF * config.pricePerDay;
+        let price = totalF * 3;
         
-        const cp = document.getElementById('coupon-input').value.trim().toUpperCase();
+        const cp = document.getElementById('coupon-field').value.trim().toUpperCase();
         if (cp === config.couponCode) price *= (1 - config.discount);
 
         document.getElementById('price-val').innerText = Math.floor(price).toLocaleString();
@@ -208,7 +227,6 @@
             fireworksActive = false;
             fire.style.height = Math.min(100, (totalF / 500) * 100) + "%";
             status.innerText = "🔥 נשמה בסכנת גיהנום"; status.style.color = "#ef4444";
-            snd.play().catch(() => {});
         } else {
             fireworksActive = true;
             fire.style.height = "0%"; status.innerText = "✨ נשמה טהורה"; status.style.color = "#10b981";
@@ -226,7 +244,7 @@
         document.getElementById('exp-name').innerText = name;
         document.getElementById('exp-price').innerText = document.getElementById('price-val').innerText;
         let listHtml = "<ul>";
-        Object.keys(counts).forEach(k => { if(counts[k]>0) listHtml += `<li>${k}: ${counts[k]} פעמים</li>`; });
+        Object.keys(counts).forEach(k => { if(counts[k]>0) listHtml += `<li>${k}: ${counts[k]}</li>`; });
         document.getElementById('exp-list').innerHTML = listHtml + "</ul>";
 
         const canvas = await html2canvas(document.getElementById('export-source'));

@@ -1,383 +1,214 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מאזני הדין - פדיון תעניות המלא (2026)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>מאזני הדין - פדיון תעניות 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Frank+Ruhl+Libre:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <style>
-        :root {
-            --holy-gold: #c5a059;
-            --holy-blue: #0f172a;
-        }
-
-        body {
-            font-family: 'Assistant', sans-serif;
-            background-color: #020617;
-            color: #f1f5f9;
-            margin: 0;
-            padding: 20px;
-            overflow: hidden;
-            transition: background 0.5s ease;
-        }
-
-        /* להבות הגיהנום */
+        :root { --gold: #c5a059; --dark: #020617; }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--dark); color: #f1f5f9; margin: 0; padding: 10px; overflow-x: hidden; }
+        
+        /* להבות הגיהנום - מאחורי התוכן */
         #hell-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background: linear-gradient(to top, #450a0a, #991b1b, #f97316, transparent);
-            box-shadow: 0 0 100px rgba(127, 29, 29, 0.9);
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 1;
-            transition: height 1s ease-in-out;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 0%;
+            background: linear-gradient(to top, #7f1d1d, #f97316, transparent);
+            box-shadow: 0 0 100px rgba(127, 29, 29, 0.7);
+            opacity: 0.8; pointer-events: none; z-index: 5; transition: height 1s ease;
         }
 
-        .container {
-            max-width: 850px;
-            margin: auto;
-            position: relative;
-            z-index: 10;
-            background: rgba(15, 23, 42, 0.96);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #334155;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        .container { 
+            position: relative; z-index: 100; max-width: 600px; margin: 10px auto;
+            background: rgba(15, 23, 42, 0.95); padding: 20px; border-radius: 15px;
+            border: 2px solid #1e293b; box-shadow: 0 0 30px rgba(0,0,0,1);
         }
 
-        h1 {
-            font-family: 'Frank Ruhl Libre', serif;
-            text-align: center;
-            color: var(--holy-gold);
-            font-size: 45px;
-            margin: 0;
-        }
+        h1 { font-family: 'Frank Ruhl Libre', serif; text-align: center; color: var(--gold); font-size: 32px; margin: 0; }
+        .soul-status { text-align: center; font-weight: bold; margin: 10px 0; font-size: 18px; transition: 0.3s; }
+        
+        .category-title { color: var(--gold); border-bottom: 1px solid var(--gold); margin: 20px 0 10px; padding-bottom: 5px; font-size: 20px; font-family: 'Frank Ruhl Libre', serif; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+        
+        .info-btn { background: var(--gold); border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-weight: bold; font-size: 14px; margin-left: 5px; }
+        .qty-controls { display: flex; align-items: center; gap: 10px; }
+        .btn-qty { background: transparent; border: 1px solid var(--gold); color: var(--gold); width: 30px; height: 30px; cursor: pointer; font-size: 18px; }
 
-        #soul-status {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-top: 10px;
-            color: #10b981;
-            transition: 0.3s;
-        }
-
-        .danger-text {
-            color: #ef4444 !important;
-            text-shadow: 0 0 10px #ef4444;
-        }
-
-        .category-title {
-            font-family: 'Frank Ruhl Libre', serif;
-            color: var(--holy-gold);
-            border-bottom: 2px solid #334155;
-            margin-top: 35px;
-            padding-bottom: 5px;
-            font-size: 24px;
-            background: rgba(197, 160, 89, 0.05);
-            padding: 8px;
-        }
-
-        .item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 10px;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .info-btn {
-            background: var(--holy-gold);
-            color: black;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-qty {
-            background: transparent;
-            border: 1px solid var(--holy-gold);
-            color: var(--holy-gold);
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .sidebar {
-            position: sticky;
-            bottom: 0;
-            background: #0f172a;
-            padding: 25px;
-            border: 2px solid var(--holy-gold);
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 40px;
+        .footer-sticky { 
+            position: sticky; bottom: 0; background: #0f172a; padding: 15px; 
+            border: 2px solid var(--gold); border-radius: 10px; margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 200;
         }
 
         #info-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 10px;
-            border: 2px solid var(--holy-gold);
-            z-index: 1000;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 0 100px rgba(0,0,0,1);
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #1e293b; padding: 20px; border-radius: 10px; border: 2px solid var(--gold);
+            z-index: 1000; width: 80%; max-width: 300px; text-align: center;
         }
 
-        #fireworks-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        /* קלף לייצוא */
-        #export-source {
-            position: absolute;
-            left: -9999px;
-            width: 500px;
-            padding: 50px;
-            background: #fdf6e3;
-            color: #4a3728;
-            font-family: 'Frank Ruhl Libre', serif;
-            border: 20px solid #4a3728;
-            text-align: center;
-        }
+        #fireworks-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10; }
+        
+        /* קלף מוסתר לייצוא */
+        #export-source { position: absolute; left: -9999px; width: 400px; padding: 30px; background: #fdf6e3; color: #4a3728; font-family: 'Frank Ruhl Libre', serif; border: 15px solid #4a3728; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div id="hell-overlay"></div>
-    <canvas id="fireworks-canvas"></canvas>
+<div id="hell-overlay"></div>
+<canvas id="fireworks-canvas"></canvas>
+<audio id="fire-sound" loop><source src="https://www.soundjay.com/nature/sounds/fire-1.mp3" type="audio/mpeg"></audio>
 
-    <audio id="fire-sound" loop>
-        <source src="https://www.soundjay.com/nature/sounds/fire-1.mp3" type="audio/mpeg">
-    </audio>
+<div class="container">
+    <h1>מאזני הדין</h1>
+    <div id="soul-status" style="color: #10b981;">✨ נשמה טהורה</div>
+    <p style="text-align:center; font-size: 14px; opacity: 0.8;">פדיון יום תענית: $3$ ש"ח</p>
 
-    <div class="container" id="app-container">
-        <h1>מאזני הדין</h1>
-        <div id="soul-status">✨ נשמה טהורה</div>
-        <p style="text-align:center; color:#94a3b8; font-size: 14px;">פדיון יום תענית: $3$ ש"ח</p>
+    <input type="text" id="user-name" placeholder="שם המבקש לתפילה..." style="width:100%; padding:10px; background:#0f172a; border:1px solid #334155; color:white; border-radius:5px; margin-bottom: 10px; box-sizing: border-box;">
 
-        <input type="text" id="user-name" placeholder="שם המבקש לתפילה..." style="width:100%; padding:12px; background:#0f172a; border:1px solid #334155; color:white; border-radius:5px; margin-bottom: 20px;">
+    <div id="sin-list"></div>
 
-        <div id="sin-list-root"></div>
-
-        <div class="sidebar">
-            <div>
-                <div style="font-size:12px; opacity:0.8;">סך הפדיון למצווה:</div>
-                <div style="font-size:32px; font-weight:bold; color:var(--holy-gold);">₪<span id="final-price">0</span></div>
-            </div>
-            <div style="text-align:left;">
-                <button onclick="goToPayment()" style="background:var(--holy-gold); padding:12px 25px; border:none; font-weight:bold; cursor:pointer; border-radius:5px;">עבור לתשלום</button>
-                <button onclick="shareWhatsAppImage()" style="background:#128c7e; color:white; padding:12px 25px; border:none; font-weight:bold; cursor:pointer; border-radius:5px; margin-top:8px;">שתף תמונה ב-WhatsApp</button>
-            </div>
+    <div class="footer-sticky">
+        <div>
+            <div style="font-size:12px;">סה"כ פדיון:</div>
+            <div style="font-size:24px; font-weight:bold; color:var(--gold);">₪<span id="price-val">0</span></div>
         </div>
+        <button onclick="shareWhatsApp()" style="background:#128c7e; color:white; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">שתף תמונה</button>
+        <button onclick="pay()" style="background:var(--gold); color:black; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">תשלום</button>
     </div>
+</div>
 
-    <div id="info-modal">
-        <h3 id="modal-title" style="color:var(--holy-gold); margin:0;"></h3>
-        <p id="modal-desc" style="font-size:15px; margin-top:15px;"></p>
-        <button onclick="closeModal()" style="background:var(--holy-gold); border:none; padding:8px 20px; cursor:pointer; font-weight:bold; margin-top:10px;">סגור</button>
-    </div>
+<div id="info-modal">
+    <h3 id="m-title" style="color:var(--gold); margin-top:0;"></h3>
+    <p id="m-desc" style="font-size:14px;"></p>
+    <button onclick="closeModal()" style="background:var(--gold); border:none; padding:5px 15px; cursor:pointer; font-weight:bold;">סגור</button>
+</div>
 
-    <div id="export-source">
-        <h1 style="color:#4a3728; border-bottom: 2px solid #4a3728; padding-bottom: 10px;">סדר פדיון תעניות</h1>
-        <p style="font-size:24px;"><strong>לזכות:</strong> <span id="exp-name"></span></p>
-        <div id="exp-list" style="text-align:right; margin:25px 0; font-size:18px;"></div>
-        <div style="background: #efe4c9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h2 style="margin:0; color:#5d4037;">סך פדיון הנפש: ₪<span id="exp-price">0</span></h2>
-        </div>
-        <div style="font-style:italic; font-size:18px;">"יְהִי רָצוֹן שֶׁיְּהֵא פִּדְיוֹן זֶה תַּחַת תַּעֲנִיּוֹתַי..."</div>
-    </div>
+<div id="export-source">
+    <h1 style="color:#4a3728; border-bottom: 2px solid #4a3728;">סדר פדיון תעניות</h1>
+    <p><strong>לזכות:</strong> <span id="exp-name"></span></p>
+    <div id="exp-list" style="text-align:right; margin:15px 0;"></div>
+    <div style="background: #efe4c9; padding: 10px; font-size: 22px; font-weight: bold; margin: 10px 0;">₪<span id="exp-price">0</span></div>
+    <p style="font-style:italic;">"יְהִי רָצוֹן שֶׁיְּהֵא פִּדְיוֹן זֶה תַּחַת תַּעֲנִיּוֹתַי..."</p>
+</div>
 
-    <script>
-    // --- הגדרות ניהול ---
-    const config = {
-        paymentUrl: "https://your-payment-link.co.il", // הכנס קישור כאן
-        holidayMode: true
-    };
-
-    const sinsData = [
-        { cat: "עוונות שבין אדם למקום (האר\"י)", items: [
-            { n: "ביטול מצוות עשה", f: 61, d: "ביטול תפילין, קריאת שמע, ציצית, סוכה ולולב." },
-            { n: "חטא במחשבה", f: 87, d: "הרהורי זנות, כפירה, שנאת חינם." },
-            { n: "שתיית יין נסך", f: 73, d: "אפילו עם ישמעאלי וכל שכן עם נוצרי." },
-            { n: "הנודר ולא מקיים", f: 6, d: "אי עמידה בנדרים." },
-            { n: "הנשבע לשקר", f: 37, d: "חילול שם שמיים בשבועת שווא." },
-            { n: "החוטא בגאווה", f: 55, d: "שורש כל העבירות." },
-            { n: "פגם כיבוד אב ואם", f: 26, d: "זלזול בכבוד ההורים." },
-            { n: "המקלל אביו ואמו", f: 40, d: "עבירה חמורה מדאורייתא." },
-            { n: "הפוגם במורא אב ואם", f: 45, d: "אי שמירה על יראת הכבוד מההורים." },
-            { n: "החוטא בכעס", f: 151, d: "כל הכועס כאילו עובד עבודה זרה." }
+<script>
+    const paymentLink = "https://www.google.com"; // החלף בקישור שלך
+    
+    const sins = [
+        { cat: "עוונות שבין אדם למקום", items: [
+            { n: "א. ביטול מצוות עשה", f: 61, d: "ביטול קריאת שמע, תפילין, ציצית או סוכה." },
+            { n: "ב. חטא במחשבה", f: 87, d: "הרהורי עבירה, כפירה או שנאת חינם." },
+            { n: "ג. יין נסך", f: 73, d: "שתיית יין מגע נכרי." },
+            { n: "ד. הנודר ולא מקיים", f: 6, d: "אי עמידה בנדרים." },
+            { n: "ה. הנשבע לשקר", f: 37, d: "חילול שם שמיים בשבועת שווא." },
+            { n: "ו. החוטא בגאווה", f: 55, d: "שורש כל העבירות." },
+            { n: "ז. פגם כיבוד אב ואם", f: 26, d: "זלזול בכבוד ההורים." },
+            { n: "ח. המקלל אביו ואמו", f: 40, d: "עבירה חמורה מהתורה." },
+            { n: "ט. פגם במורא הורים", f: 45, d: "אי שמירה על יראת הורים." },
+            { n: "י. החוטא בכעס", f: 151, d: "הכועס כאילו עובד עבודה זרה." }
         ]},
-        { cat: "עוונות עריות וקדושה", items: [
-            { n: "תיקון כללי (ד' מיתות)", f: 200, d: "פדיון כנגד חיובי מיתות בית דין." },
-            { n: "הוצאת זרע לבטלה", f: 84, d: "פגם הברית והיסוד." },
-            { n: "הבועל נידה", f: 82, d: "איסור כרת חמור." },
-            { n: "הבא על בהמה/חיה", f: 216, d: "חטא המוריד את האדם מדרגתו." },
-            { n: "הבא על הגויה", f: 216, d: "פגיעה בברית קודש עם נכרית." },
-            { n: "הבא על הזכר", f: 233, d: "תיקון למשכב זכר." },
-            { n: "אכילת נבלות וטרפות", f: 87, d: "טימום הלב באכילה אסורה." },
-            { n: "מאכלות אסורים (ערלה/טבל)", f: 91, d: "אכילת טבל, ערלה ושקצים." },
-            { n: "הבא על אשת איש", f: 325, d: "חטא חמור בקדושת הבית." },
-            { n: "הכותב קמיעות", f: 45, d: "שימוש בשמות הקודש שלא כדין." }
+        { cat: "קדושה ועריות", items: [
+            { n: "יא. תיקון כללי (ד' מיתות)", f: 200, d: "פדיון כנגד חיובי מיתות בית דין." },
+            { n: "יב. הוצאת זרע לבטלה", f: 84, d: "פגם הברית והיסוד." },
+            { n: "יג. הבועל נידה", f: 82, d: "איסור כרת חמור." },
+            { n: "יד. הבא על בהמה", f: 216, d: "חטא המוריד מהדרגה האנושית." },
+            { n: "טו. הבא על הגויה", f: 216, d: "פגיעה בברית קודש." },
+            { n: "טז. הבא על הזכר", f: 233, d: "משכב זכר." },
+            { n: "יז. אכילת נבלות", f: 87, d: "טימום הלב באכילה אסורה." },
+            { n: "יח. מאכלות אסורים", f: 91, d: "טבל, ערלה ושקצים." },
+            { n: "יט. הבא על אשת איש", f: 325, d: "חטא חמור בקדושת הבית." },
+            { n: "כ. הכותב קמיעות", f: 45, d: "שימוש בשמות הקודש שלא כדין." }
         ]},
-        { cat: "תיקוני הרוקח", items: [
-            { n: "המלבין פני חברו", f: 40, d: "ביוש אדם ברבים נחשב כשפיכות דמים." },
-            { n: "חיבוק ונישוק נידה", f: 40, d: "קרבה גופנית האסורה מן הדין." },
-            { n: "גנב או לוקח ריבית", f: 40, d: "גזל ממון או הלוואה אסורה." },
-            { n: "לשון הרע", f: 40, d: "דיבור בגנות הזולת ורכילות." }
+        { cat: "בין אדם לחברו", items: [
+            { n: "כא. המלבין פני חברו", f: 40, d: "ביוש אדם ברבים." },
+            { n: "כב. חיבוק ונישוק נידה", f: 40, d: "קרבה גופנית אסורה." },
+            { n: "כג. גניבה/ריבית", f: 40, d: "גזל ממון או הלוואה אסורה." },
+            { n: "כד. לשון הרע", f: 40, d: "דיבור בגנות הזולת." }
         ]}
     ];
 
     let counts = {};
-    let fwActive = false;
+    let fw = true;
 
     function init() {
-        const root = document.getElementById('sin-list-root');
-        sinsData.forEach(cat => {
-            const h = document.createElement('div'); h.className = 'category-title'; h.innerText = cat.cat;
+        const root = document.getElementById('sin-list');
+        sins.forEach(c => {
+            const h = document.createElement('div'); h.className = 'category-title'; h.innerText = c.cat;
             root.appendChild(h);
-            cat.items.forEach(i => {
+            c.items.forEach(i => {
                 counts[i.n] = 0;
                 const div = document.createElement('div'); div.className = 'item';
-                div.innerHTML = `
-                    <div><button class="info-btn" onclick="showInfo('${i.n}', '${i.d}')">?</button> <strong>${i.n}</strong></div>
-                    <div class="qty-controls">
-                        <button class="btn-qty" onclick="update('${i.n}', -1)">-</button>
-                        <span id="qty-${i.n}" style="width:20px; text-align:center; font-weight:bold;">0</span>
-                        <button class="btn-qty" onclick="update('${i.n}', 1)">+</button>
-                    </div>`;
+                div.innerHTML = `<div><button class="info-btn" onclick="showInfo('${i.n}','${i.d}')">?</button><strong>${i.n}</strong></div>
+                    <div class="qty-controls"><button class="btn-qty" onclick="upd('${i.n}',-1)">-</button>
+                    <span id="q-${i.n}">0</span><button class="btn-qty" onclick="upd('${i.n}',1)">+</button></div>`;
                 root.appendChild(div);
             });
         });
-        if (config.holidayMode) { fwActive = true; startFireworks(); }
+        startFW();
     }
 
-    function showInfo(t, d) {
-        document.getElementById('modal-title').innerText = t;
-        document.getElementById('modal-desc').innerText = d;
-        document.getElementById('info-modal').style.display = 'block';
+    function upd(n, d) {
+        counts[n] = Math.max(0, counts[n] + d);
+        document.getElementById(`q-${n}`).innerText = counts[n];
+        calc();
     }
 
-    function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
-
-    function update(name, delta) {
-        counts[name] = Math.max(0, counts[name] + delta);
-        document.getElementById(`qty-${name}`).innerText = counts[name];
-        calculate();
-    }
-
-    function calculate() {
+    function calc() {
         let totalF = 0;
-        Object.keys(counts).forEach(k => {
-            const item = sinsData.flatMap(c => c.items).find(i => i.n === k);
-            totalF += counts[k] * item.f;
-        });
-
+        sins.forEach(c => c.items.forEach(i => totalF += counts[i.n] * i.f));
         const price = totalF * 3;
-        document.getElementById('final-price').innerText = price.toLocaleString();
+        document.getElementById('price-val').innerText = price.toLocaleString();
 
         const fire = document.getElementById('hell-overlay');
         const status = document.getElementById('soul-status');
-        const audio = document.getElementById('fire-sound');
+        const snd = document.getElementById('fire-sound');
 
         if (totalF > 0) {
-            fwActive = false;
-            fire.style.height = Math.min(100, (totalF / 500) * 100) + "%";
-            status.innerText = "🔥 נשמה בסכנת גיהנום";
-            status.classList.add('danger-text');
-            audio.play().catch(() => {}); // ייתכן שיחסם ע"י הדפדפן ללא לחיצה
+            fw = false; fire.style.height = Math.min(100, (totalF / 500) * 100) + "%";
+            status.innerText = "🔥 נשמה בסכנת גיהנום"; status.style.color = "#ef4444";
+            snd.play().catch(() => {});
         } else {
-            fire.style.height = "0%";
-            status.innerText = "✨ נשמה טהורה";
-            status.classList.remove('danger-text');
-            audio.pause(); audio.currentTime = 0;
-            if (config.holidayMode) { fwActive = true; startFireworks(); }
+            fw = true; fire.style.height = "0%"; status.innerText = "✨ נשמה טהורה"; status.style.color = "#10b981";
+            snd.pause(); snd.currentTime = 0; startFW();
         }
     }
 
-    function goToPayment() {
-        const amount = document.getElementById('final-price').innerText.replace(/,/g, '');
-        window.location.href = `${config.paymentUrl}?amount=${amount}`;
-    }
+    function pay() { window.location.href = paymentLink + "?amount=" + document.getElementById('price-val').innerText; }
 
-    async function shareWhatsAppImage() {
+    async function shareWhatsApp() {
         const name = document.getElementById('user-name').value || "פלוני";
-        const price = document.getElementById('final-price').innerText;
         document.getElementById('exp-name').innerText = name;
-        document.getElementById('exp-price').innerText = price;
-
-        let listHtml = "<ul>";
-        Object.keys(counts).forEach(k => { if (counts[k] > 0) listHtml += `<li>${k}: ${counts[k]} פעמים</li>`; });
-        listHtml += "</ul>";
-        document.getElementById('exp-list').innerHTML = listHtml;
+        document.getElementById('exp-price').innerText = document.getElementById('price-val').innerText;
+        let l = "<ul>";
+        Object.keys(counts).forEach(k => { if(counts[k]>0) l += `<li>${k}: ${counts[k]}</li>`; });
+        document.getElementById('exp-list').innerHTML = l + "</ul>";
 
         const canvas = await html2canvas(document.getElementById('export-source'));
         canvas.toBlob(async (blob) => {
-            const file = new File([blob], 'pidyon.png', { type: 'image/png' });
-            if (navigator.share) {
-                await navigator.share({ files: [file], title: 'פדיון תעניות', text: `סיכום עבור ${name}` });
-            } else {
-                const link = document.createElement('a'); link.download = 'pidyon.png';
-                link.href = URL.createObjectURL(blob); link.click();
-            }
+            const f = new File([blob], 'tikun.png', { type: 'image/png' });
+            if (navigator.share) await navigator.share({ files: [f], title: 'פדיון תעניות' });
+            else { const a = document.createElement('a'); a.download = 'tikun.png'; a.href = URL.createObjectURL(blob); a.click(); }
         });
     }
 
-    function startFireworks() {
-        if (!fwActive) return;
-        const canvas = document.getElementById('fireworks-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    function showInfo(t, d) { document.getElementById('m-title').innerText = t; document.getElementById('m-desc').innerText = d; document.getElementById('info-modal').style.display = 'block'; }
+    function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
+
+    function startFW() {
+        if (!fw) return;
+        const c = document.getElementById('fireworks-canvas'); const ctx = c.getContext('2d');
+        c.width = window.innerWidth; c.height = window.innerHeight;
         let p = [];
         function anim() {
-            if (!fwActive) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            p.forEach((i,idx) => {
-                i.x+=i.vx; i.y+=i.vy; i.a-=0.01; ctx.globalAlpha=i.a; ctx.fillStyle=i.c;
-                ctx.beginPath(); ctx.arc(i.x,i.y,2,0,7); ctx.fill();
-                if(i.a<=0) p.splice(idx,1);
-            });
-            if(Math.random()<0.05) {
-                const x=Math.random()*canvas.width, y=Math.random()*canvas.height/2;
-                for(let k=0;k<15;k++) p.push({x,y,c:`hsl(${Math.random()*360},70%,50%)`,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5,a:1});
-            }
+            if (!fw) { ctx.clearRect(0,0,c.width,c.height); return; }
+            ctx.clearRect(0,0,c.width,c.height);
+            p.forEach((i,idx) => { i.x+=i.vx; i.y+=i.vy; i.a-=0.01; ctx.globalAlpha=i.a; ctx.fillStyle=i.c; ctx.beginPath(); ctx.arc(i.x,i.y,2,0,7); ctx.fill(); if(i.a<=0) p.splice(idx,1); });
+            if(Math.random()<0.05) { const x=Math.random()*c.width, y=Math.random()*c.height/2; for(let k=0;k<15;k++) p.push({x,y,c:`hsl(${Math.random()*360},70%,50%)`,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5,a:1}); }
             requestAnimationFrame(anim);
         }
         anim();
     }
-
     init();
-    </script>
-
+</script>
 </body>
 </html>
